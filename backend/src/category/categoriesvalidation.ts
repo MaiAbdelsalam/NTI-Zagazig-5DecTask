@@ -5,9 +5,8 @@ import validatorMiddelware from "../middelwaresErrors/validatormiddelware";
 class CategoriesValidation{
 //  i witll replace this message to =this=====>to translate error to other message
 // withMessage('category ..name is required')====>withMessage((req:Request)=>req.__'validation_field')
- createOne=[body('name')
-    .notEmpty().withMessage((val,{req})=>`${req.__('validation_field')}`)
-    .isLength({min:2,max:50}).withMessage((req:express.Request)=>`${req.__('validation_length_short')}`)
+ createOne=[body('name').notEmpty().withMessage((val,{req})=>`${req.__('validation_field')}`)
+    .isLength({min:2,max:50}).withMessage((val,{req})=>`${req.__('validation_length_short')}`)
     .custom(async(val:string,{req})=>{
         const category=await categoriesSchema.findOne({name:val});
         if (category) throw new Error(`${req.__('not_found')}`);
@@ -15,7 +14,7 @@ class CategoriesValidation{
     })
     ,validatorMiddelware];
     UpdateOne=[
-        param('id').isMongoId().withMessage((req:express.Request)=>`${req.__('mongo_id')}`)
+        param('id').isMongoId().withMessage((val,{req})=>`${req.__('mongo_id')}`)
         // ,body('name').optional()
         // .isLength({min:2,max:50}).withMessage('invalid length')
         // .custom(async(val:string,{req})=>{
@@ -26,7 +25,7 @@ class CategoriesValidation{
         ,validatorMiddelware];
 
     getOne=[
-        param('id').isMongoId().withMessage((req:express.Request)=>`${req.__('mongo_id')}`)
+        param('id').isMongoId().withMessage((val,{req})=>`${req.__('mongo_id')}`)
         // ,body('name').optional()
         // .isLength({min:2,max:50}).withMessage('invalid length')
         // .custom(async(val:string,{req})=>{
@@ -36,7 +35,7 @@ class CategoriesValidation{
         ,validatorMiddelware];
 
     deleteOne=[
-        param('id').isMongoId().withMessage((req:express.Request)=>`${req.__('mongo_id')}`)
+        param('id').isMongoId().withMessage((val,{req})=>`${req.__('mongo_id')}`)
         // ,body('name').optional()
         // .isLength({min:2,max:50}).withMessage('invalid length')
         // .custom(async(val:string,{req})=>{
