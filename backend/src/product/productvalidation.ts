@@ -134,12 +134,13 @@ class Productvalidation{
             return true;
         }),
         body('subcategory').optional()
+        .isLength({min:2,max:500}).withMessage((req:express.Request)=>`${req.__('validation_length_short')}`)
         .isMongoId().withMessage((req:express.Request)=>`${req.__('mongo_id')}`)
         .custom(async(val:string,{req})=>{
             const subcategory=await subcategoriesSchema.findById(val);
             if(!subcategory )  throw new Error(`subcategory with id ${val}${req.__('not_found')}`);
             // if(subcategory.category._id!.toString() !=req.body.category.toString()) throw new Error(`subcategory with id ${val} not belong to this category`);
-            if(subcategory.category._id! && !req.body.category){
+            if(subcategory.category._id! && !req.body.category || subcategory.category._id ){
                 req.body.category=subcategory.category._id
             }
             // if(subcategory.category._id.toString()!=req.body.category.toString)
