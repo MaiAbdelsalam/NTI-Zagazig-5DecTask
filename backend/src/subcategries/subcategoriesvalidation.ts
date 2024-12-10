@@ -3,13 +3,13 @@ import express from 'express'
 import subcategorieSchema from "./subcategories.schema";
 import validatorMiddelware from "../middelwaresErrors/validatormiddelware";
 import categoriesSchema from "../category/categories.schema";
-class CategoriesValidation{
+class SubCategoriesValidation{
 
  createOne=[body('name').notEmpty().withMessage((val,{req})=>`${req.__('validation_field')}`)
-    .isLength({min:2,max:50}).withMessage((req:express.Request)=>`${req.__('validation_length_short')}`),
+    .isLength({min:2,max:50}).withMessage((val,{req})=>`${req.__('validation_length_short')}`),
     body('category')
-    .notEmpty().withMessage((req)=>`${req.__('validation_field')}`)
-    .isMongoId().withMessage((req:express.Request)=>`${req.__('mongo_id')}`)
+    .notEmpty().withMessage((val,{req})=>`${req.__('validation_field')}`)
+    .isMongoId().withMessage((val,{req})=>`${req.__('mongo_id')}`)
     .custom(async(val:string,{req})=>{
         const category=await categoriesSchema.findById(val);
         if(!category) throw new Error(`category with id ${val}${req.__('not_found')}`);
@@ -22,7 +22,7 @@ class CategoriesValidation{
     // })
     ,validatorMiddelware];
     UpdateOne=[
-        param('id').isMongoId().withMessage((req:express.Request)=>`${req.__('mongo_id')}`)
+        param('id').isMongoId().withMessage((val,{req})=>`${req.__('mongo_id')}`)
         ,body('name').optional().isMongoId().withMessage((req:express.Request)=>`${req.__('mongo_id')}`)
 
         // .isLength({min:2,max:50}).withMessage('invalid length')
@@ -34,7 +34,7 @@ class CategoriesValidation{
         ,validatorMiddelware];
 
     getOne=[
-        param('id').isMongoId().withMessage((req:express.Request)=>`${req.__('mongo_id')}`)
+        param('id').isMongoId().withMessage((val,{req})=>`${req.__('mongo_id')}`)
         // ,body('name').optional()
         // .isLength({min:2,max:50}).withMessage('invalid length')
         // .custom(async(val:string,{req})=>{
@@ -44,7 +44,7 @@ class CategoriesValidation{
         ,validatorMiddelware];
 
     deleteOne=[
-        param('id').isMongoId().withMessage((req:express.Request)=>`${req.__('mongo_id')}`)
+        param('id').isMongoId().withMessage((val,{req})=>`${req.__('mongo_id')}`)
         // ,body('name').optional()
         // .isLength({min:2,max:50}).withMessage('invalid length')
         // .custom(async(val:string,{req})=>{
@@ -56,5 +56,5 @@ class CategoriesValidation{
 }
 
 
-const subcategoriesValidation=new CategoriesValidation();
+const subcategoriesValidation=new SubCategoriesValidation();
 export default subcategoriesValidation
