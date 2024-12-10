@@ -8,13 +8,50 @@ import categoriesSchema from "../category/categories.schema";
 import { productInterface } from "./product.interface";
 class Productvalidation{
 
-     createOne=[
+     createOne=
+    //  [
+//      body('name')
+//      .notEmpty().withMessage((val, {req}) => req.__('validation_field'))
+//      .isLength({min: 2, max: 50}).withMessage((val, {req}) => req.__('validation_length_short')),
+//      body('description')
+//      .notEmpty().withMessage((val, {req}) => req.__('validation_field'))
+//      .isLength({min: 2, max: 500}).withMessage((val, {req}) => req.__('validation_length_long')),
+//  body('price')
+//      .notEmpty().withMessage((val, {req}) => req.__('validation_field'))
+//      .isFloat({min: 1, max: 10000000}).withMessage((val, {req}) => req.__('validation_value')),
+//  body('quantity').optional()
+//      .isInt({min: 1, max: 10000000}).withMessage((val, {req}) => req.__('validation_value')),
+//  body('discount').optional()
+//      .isFloat({min: 1, max: 100}).withMessage((val, {req}) => req.__('validation_value'))
+//      .custom((val, {req}) => {
+//          req.body.priceAfterDiscount = req.body.price - (req.body.price * val / 100)
+//          return true;
+//      }),
+//      body('category')
+//      .notEmpty().withMessage((val, {req}) => req.__('validation_field'))
+//      .isMongoId().withMessage((val, {req}) => req.__('invalid_id'))
+//      .custom(async (val: string, {req}) => {
+//          const category = await categoriesSchema.findById(val);
+//          if (!category) throw new Error(`${req.__('validation_value')}`);
+//          return true;
+//      }),
+//  body('subcategory')
+//      .notEmpty().withMessage((val, {req}) => req.__('validation_field'))
+//      .isMongoId().withMessage((val, {req}) => req.__('invalid_id'))
+//      .custom(async (val: string, {req}) => {
+//          const subcategory = await subcategoriesSchema.findById(val);
+//          if (!subcategory || subcategory.category._id!.toString() !== req.body.category.toString()) throw new Error(`${req.__('validation_value')}`);
+//          return true;
+//      }),
+//      validatorMiddelware
+// ]
+     [
     body('name').notEmpty().withMessage((val,{req})=>`product name  ${req.__('validation_field')}`)
-    .isLength({min:2,max:50}).withMessage((req:express.Request)=>`${req.__('validation_length_short')}`),
+    .isLength({min:2,max:50}).withMessage((val,{req})=>`${req.__('validation_length_short')}`),
     body('description').notEmpty().withMessage((val,{req})=>`product description ${req.__('validation_field')}`)
-    .isLength({min:2,max:500}).withMessage((req:express.Request)=>`${req.__('validation_length_short')}`),
+    .isLength({min:2,max:500}).withMessage((val,{req})=>`${req.__('validation_length_short')}`),
     body('price').notEmpty().withMessage((val,{req})=>` ${req.__('validation_value')}`)
-    .isFloat({min:1,max:1000}).withMessage((req:express.Request)=>`${req.__('validation_length_short')}`),
+    .isFloat({min:1,max:1000}).withMessage((req:Request)=>`${req.__('validation_length_short')}`),
     body('discount').optional()
     .custom((val,{req})=>{
         if(req.body.discount > 0){
@@ -23,15 +60,15 @@ class Productvalidation{
         return true
     }),
     body('category')
-    .isMongoId().withMessage((req:express.Request)=>`${req.__('mongo_id')}`)
+    .isMongoId().withMessage((val,{req})=> req.__('not_found'))
     .custom(async(val:string,{req})=>{
         const category=await categoriesSchema.findById(val);
         if(!category) throw new Error(`category with id ${val}${req.__('invalid_id')}`);
         return true
     }),
     body('subcategory')
-    .notEmpty().withMessage((req)=>`${req.__('validation_field')}`)
-    .isMongoId().withMessage((req:express.Request)=>`${req.__('mongo_id')}`)
+    .notEmpty().withMessage((val,{req})=>`${req.__('validation_field')}`)
+    .isMongoId().withMessage((val,{req})=>`${req.__('mongo_id')}`)
     .custom(async(val:string,{req})=>{
         const subcategory=await subcategoriesSchema.findById(val);
         if(!subcategory)  throw new Error(`category with id {req.__('not_found')}`);
@@ -40,12 +77,8 @@ class Productvalidation{
         // if(subcategory.category._id.toString()!=req.body.category.toString)
         return true
     }),
-
-        validatorMiddelware]
-        
-
-
-     
+        validatorMiddelware
+    ]
     //  (async(req:Request,res:Response,next:NextFunction)=>{
         
     //  // if(req.params.categoryId && !req.body.category) req.body.category=req.params.categoryId
@@ -98,9 +131,9 @@ class Productvalidation{
     // }) 
         // ,validatorMiddelware]
     UpdateOne=[
-        param('id').isMongoId().withMessage((req:express.Request)=>`${req.__('mongo_id')}`),
+        param('id').isMongoId().withMessage((val,{req})=> `${req.__('not_found')}`),
         body('name').optional()
-        .isLength({min:2,max:50}).withMessage((req:express.Request)=>`${req.__('validation_length_short')}`),    
+        .isLength({min:2,max:50}).withMessage((val,{req})=>`${req.__('validation_length_short')}`),    
         // .isLength({min:2,max:50}).withMessage('invalid length')
         // .custom(async(val:string,{req})=>{
         //     const category=await categoriesSchema.findOne({name:val});
@@ -108,13 +141,14 @@ class Productvalidation{
         //     return true;
         // })
         body('description').optional()
-        .isLength({min:2,max:500}).withMessage((req:express.Request)=>`${req.__('validation_length_short')}`),
+        .isLength({min:2,max:500}).withMessage((val,{req})=>`${req.__('validation_length_short')}`),
     
         body('price').optional()
-        .isFloat({min:1,max:1000}).withMessage((req:express.Request)=>`${req.__('validation_length_short')}`),
+        .isFloat({min:1,max:1000}).withMessage((val,{req})=>`${req.__('validation_length_short')}`)
+,
     
         body('discount').optional()
-         .isFloat({min:1,max:1000}).withMessage((req:express.Request)=>`${req.__('validation_length_short')}`)
+         .isFloat({min:1,max:1000}).withMessage((val,{req})=>`${req.__('validation_length_short')}`)
         .custom(async(val,{req})=>{
             const product=await productSchema.findById(req.params?.id)
             console.log(`product price ${product?.price}`);
@@ -122,7 +156,10 @@ class Productvalidation{
             if(req.body.discount! ||req.body.discount! && !product?.price)
             req.body.priceAfterDiscount= req.body.price-(req.body.price*req.body.discount/100)
             return true
-    }),
+    })
+        ,
+
+    
         body('quantity').optional()
         .isInt({min:0,max:1000}).withMessage((req:express.Request)=>`${req.__('validation_length_short')}`),
     
@@ -133,6 +170,7 @@ class Productvalidation{
             if(!category) throw new Error(`category with id ${val}${req.__('invalid_id')}`);
             return true;
         }),
+
         body('subcategory').optional()
         .isLength({min:2,max:500}).withMessage((req:express.Request)=>`${req.__('validation_length_short')}`)
         .isMongoId().withMessage((req:express.Request)=>`${req.__('mongo_id')}`)
