@@ -16,7 +16,6 @@ class Productvalidation{
     body('price').notEmpty().withMessage((val,{req})=>` ${req.__('validation_value')}`)
     .isFloat({min:1,max:1000}).withMessage((req:express.Request)=>`${req.__('validation_length_short')}`),
     body('discount').optional()
-    // كان في غلط في الكود اللي قاله وده اللي كان موقف الكرييت 
     .custom((val,{req})=>{
         if(req.body.discount > 0){
         req.body.priceAfterDiscount= req.body.price-(req.body.price*req.body.discount/100)
@@ -115,12 +114,15 @@ class Productvalidation{
         .isFloat({min:1,max:1000}).withMessage((req:express.Request)=>`${req.__('validation_length_short')}`),
     
         body('discount').optional()
-        .notEmpty().withMessage((val,{req})=>` ${req.__('validation_value')}`)
-        .isFloat({min:1,max:1000}).withMessage((req:express.Request)=>`${req.__('validation_length_short')}`)
-        .custom((val,{req})=>{
-            req.body.priceAfterDiscount= req.body.price-(req.body.price*req.body.val/100)
+         .isFloat({min:1,max:1000}).withMessage((req:express.Request)=>`${req.__('validation_length_short')}`)
+        .custom(async(val,{req})=>{
+            const product=await productSchema.findById(req.params?.id)
+            console.log(`product price ${product?.price}`);
+            req.body.price=product?.price
+            if(req.body.discount! ||req.body.discount! && !product?.price)
+            req.body.priceAfterDiscount= req.body.price-(req.body.price*req.body.discount/100)
             return true
-        }),
+    }),
         body('quantity').optional()
         .isInt({min:0,max:1000}).withMessage((req:express.Request)=>`${req.__('validation_length_short')}`),
     
