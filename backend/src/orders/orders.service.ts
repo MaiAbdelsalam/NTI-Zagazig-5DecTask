@@ -43,19 +43,18 @@ class OrderService{
         console.log('true1')
 
             await productSchema.bulkWrite(bulkOptions);
-            await order.save()
-            // await cartSchema.deleteOne({user: req.user?._id});
+            await cartSchema.deleteOne({user: req.user?._id});
             res.status(201).json({data: order})
      });  
      payOrder=asyncHandler(async(req:Request,res:Response,next:NextFunction)=>{
-        const order=await orderSchema.findByIdAndUpdate(req.params.id,{
+        const order=await orderSchema.findByIdAndUpdate(req.params.orderId,{
             isPaid:true,
             paidAt:Date.now()},
             {new:true})
             res.status(200).json({success:true})
      }); 
      deliverOrder=asyncHandler(async(req:Request,res:Response,next:NextFunction)=>{
-        const order=await orderSchema.findByIdAndUpdate(req.params.id,{
+        const order=await orderSchema.findByIdAndUpdate(req.params.orderId,{
             isDelievered:true,
             deliveredAt:Date.now()
         },
