@@ -15,7 +15,7 @@ class OrderValidation{
     // })
     ,validatorMiddelware];
     UpdateOne=[
-        param('id').isMongoId().withMessage((val,{req})=>`${req.__('mongo_id')}`)
+        param('orderId').isMongoId().withMessage((val,{req})=>`${req.__('mongo_id')}`)
         // ,body('name').optional()
         // .isLength({min:2,max:50}).withMessage('invalid length')
         // .custom(async(val:string,{req})=>{
